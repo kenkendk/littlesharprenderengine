@@ -21,14 +21,36 @@ namespace LSRETester
             Topology.IO.WKTReader rd = new Topology.IO.WKTReader();
             IEnvelope bounds = rd.Read(BoundWKT.Text).EnvelopeInternal;
 
-            LittleSharpRenderEngine.LittleSharpRenderEngine engine = new LittleSharpRenderEngine.LittleSharpRenderEngine(bounds, null, new Size(1024, 768), Color.Transparent);
             LittleSharpRenderEngine.IProvider provider = new WKTProvider(WKTFile.Text);
 
-            engine.RenderFeatures(null, provider.GetFeatures(bounds, null));
+            Form2 dlg = new Form2(bounds, provider);
+            dlg.ShowDialog();
+        }
 
-            Form2 dlg = new Form2();
-            dlg.pictureBox1.Image = engine.Bitmap;
-            dlg.Size = dlg.pictureBox1.Image.Size;
+        private void button2_Click(object sender, EventArgs e)
+        {
+            OSGeo.MapGuide.MaestroAPI.ServerConnectionI con = MapGuideProvider.MapGuideUtil.CreateConnection(
+                MapGuideURL.Text,
+                MapGuideUsername.Text,
+                MapGuidePassword.Text);
+
+            IEnvelope env = MapGuideProvider.MapGuideUtil.GetMapExtent(con, MapGuideResource.Text);
+
+            List<MapGuideProvider.MapGuideLayer> layers = new List<MapGuideProvider.MapGuideLayer>();
+
+            foreach(string s in MapGuideProvider.MapGuideUtil.EnumerateLayers(con, MapGuideResource.Text))
+                try
+                {
+                    layers.Add(new MapGuideProvider.MapGuideLayer(con, s));
+                }
+                catch
+                {
+                    //Don't care about broken layers
+                }
+
+            layers.Reverse();
+
+            Form2 dlg = new Form2(env, layers.ToArray());
             dlg.ShowDialog();
         }
     }

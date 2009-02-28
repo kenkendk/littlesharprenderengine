@@ -28,6 +28,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OSGeo.MapGuide.MaestroAPI, Version=1.0.9.23870, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ThirdParty\MaestroAPI\OSGeo.MapGuide.MaestroAPI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -87,6 +91,10 @@
     <ProjectReference Include="..\LittleSharpRenderEngine\LittleSharpRenderEngine.csproj">
       <Project>{839D45C1-AD2D-4437-8BC1-BA26035942FF}</Project>
       <Name>LittleSharpRenderEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MapGuideProvider\MapGuideProvider.csproj">
+      <Project>{FDDFE2DB-A3CF-4FA6-9612-D21731F7D935}</Project>
+      <Name>MapGuideProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
