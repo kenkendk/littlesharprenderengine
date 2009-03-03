@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using LittleSharpRenderEngine.Style.Base;
 
 namespace LittleSharpRenderEngine.Style
 {
@@ -17,6 +18,18 @@ namespace LittleSharpRenderEngine.Style
         {
             m_outlines = outlines;
         }
+
+		public Line(IOutline outline) : this(new IOutline[]{outline})
+		{
+		}
+
+		public Line(System.Drawing.Color color, int width)
+		{
+			Outline ol = new Outline();
+			ol.ForegroundColor = color;
+			ol.Width = width;
+			m_outlines = new IOutline[] {ol };
+		}
 
         public IEnumerable<IOutline> Outlines
         {

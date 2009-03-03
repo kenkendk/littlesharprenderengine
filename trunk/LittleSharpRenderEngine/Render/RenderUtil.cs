@@ -33,8 +33,7 @@ namespace LittleSharpRenderEngine.Render
             }
 
             using(brush)
-                if (fill.Pattern == null)
-                    graphics.FillPath(brush, path);
+                if (fill.Pattern == null) graphics.FillPath(brush, path);
 
         }
 

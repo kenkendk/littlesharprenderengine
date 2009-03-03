@@ -190,7 +190,7 @@ namespace LSRETester
 			this.m_mapinfofiletext.Name = "m_mapinfofiletext";
 			this.m_mapinfofiletext.Size = new System.Drawing.Size(464, 20);
 			this.m_mapinfofiletext.TabIndex = 18;
-			this.m_mapinfofiletext.Text = "c:\\MapInfo.tab";
+			this.m_mapinfofiletext.Text = "D:\\workspace\\MI_Byggesag\\MapInfo-modul\\Test\\Grundkort\\MAT_REG.TAB";
 			// 
 			// label7
 			// 

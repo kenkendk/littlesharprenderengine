@@ -184,6 +184,14 @@ namespace MapGuideProvider
                     }
         }
 
+		public IEnvelope MaxBounds
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
         private OperationOrParameter ExtractColumnNames(string filter, Dictionary<string, string> columns)
         {
             //TODO: The parser does not support all the stuff that the MapGuide parser supports, eg. TIMESTAMP, INTERSECTS and GEOMFROMTEXT

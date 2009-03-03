@@ -27,8 +27,7 @@ namespace LSRETester
             Pan
         }
 
-        public frmMap(IEnvelope envelope, params IProvider[] layers)
-            : this()
+        public frmMap(IEnvelope envelope, params IProvider[] layers) : this()
         {
             m_layers = new List<IProvider>(layers);
             m_env = m_origEnv = envelope;

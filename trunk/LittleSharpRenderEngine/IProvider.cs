@@ -11,5 +11,6 @@ namespace LittleSharpRenderEngine
     public interface IProvider
     {
         IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, float scale);
+		IEnvelope MaxBounds { get; }
     }
 }

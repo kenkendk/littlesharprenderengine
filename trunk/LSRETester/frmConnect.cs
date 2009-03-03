@@ -23,6 +23,7 @@ namespace LSRETester
 
             LittleSharpRenderEngine.IProvider provider = new WKTProvider(WKTFile.Text);
 
+			//show map
             frmMap dlg = new frmMap(bounds, provider);
             dlg.ShowDialog();
         }
@@ -67,8 +68,20 @@ namespace LSRETester
 
 		private void m_RenderMapInfoButton_Click(object sender, EventArgs e)
 		{
-			EBop.MapObjects.MapInfo.Layer l = new EBop.MapObjects.MapInfo.Layer(m_mapinfofiletext.Text);
-			
+			MapInfoProvider layer = null;
+			try
+			{
+				layer = new MapInfoProvider(m_mapinfofiletext.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(this, "Kunne ikke åbne fil\nFejl: " + ex.Message, "Fejl", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			//show map
+			frmMap dlg = new frmMap(layer.MaxBounds, layer);
+			dlg.ShowDialog();
 		}
     }
 }
