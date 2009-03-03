@@ -31,6 +31,8 @@ namespace LittleSharpRenderEngine
         private ICoordinateSystem m_sourceCoordsys;
         private Graphics m_graphics;
 
+        private double m_scale;
+
         public LittleSharpRenderEngine(IEnvelope bbox, ICoordinateSystem coordinateSystem, Size size, Color background)
         {
             m_boundingBox = bbox;
@@ -49,7 +51,7 @@ namespace LittleSharpRenderEngine
         public ICoordinateSystem CoordinateSystem { get { return m_targetCoordsys; } }
         public Size Size { get { return m_canvas.Size; } }
 
-        public ICoordinateSystem CurrentFeatureCoordinateSystem { get { return m_sourceCoordsys; } }
+        public ICoordinateSystem SourceCoordinateSystem { get { return m_sourceCoordsys; } }
 
         public void RenderFeatures(ICoordinateSystem coordsys, IEnumerable<IFeature> items)
         {
@@ -84,6 +86,15 @@ namespace LittleSharpRenderEngine
 
             m_sourceCoordsys = null;
         }
+
+        /*private IGeometry SimpleProjectionConverter(LittleSharpRenderEngine engine, IGeometry geometry)
+        {
+            if (engine.m_sourceCoordsys == null || engine.m_targetCoordsys == null)
+                return geometry;
+
+            Topology.CoordinateSystems.Transformations.CoordinateTransformationFactory tf = new Topology.CoordinateSystems.Transformations.CoordinateTransformationFactory();
+            tf.CreateFromCoordinateSystems(engine.m_sourceCoordsys, engine.m_targetCoordsys);
+        }*/
 
         private ICoordinate[] PrimitiveCoordinateMapper(ICoordinate[] input)
         {

@@ -38,6 +38,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoordinateSystem\ActualCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystem\DegreeBasedCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystem\FeetBasedCoordsys.cs" />
+    <Compile Include="CoordinateSystem\MeterBasedCoordsys.cs" />
+    <Compile Include="ICoordinateSystemHelper.cs" />
     <Compile Include="IFeature.cs" />
     <Compile Include="IProvider.cs" />
     <Compile Include="LittleSharpRenderEngine.cs" />

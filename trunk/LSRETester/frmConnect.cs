@@ -24,7 +24,7 @@ namespace LSRETester
             LittleSharpRenderEngine.IProvider provider = new WKTProvider(WKTFile.Text);
 
 			//show map
-            frmMap dlg = new frmMap(bounds, provider);
+            frmMap dlg = new frmMap(bounds, null, provider);
             dlg.ShowDialog();
         }
 
@@ -36,10 +36,17 @@ namespace LSRETester
                 MapGuidePassword.Text);
 
             IEnvelope env = MapGuideProvider.MapGuideUtil.GetMapExtent(con, MapGuideResource.Text);
+            Topology.CoordinateSystems.ICoordinateSystem coordSys = null;
+
+            try
+            {
+                coordSys = MapGuideProvider.MapGuideUtil.GetCoordinateSystem(con, MapGuideResource.Text);
+            }
+            catch { }
 
             List<MapGuideProvider.MapGuideLayer> layers = new List<MapGuideProvider.MapGuideLayer>();
 
-            foreach(string s in MapGuideProvider.MapGuideUtil.EnumerateLayers(con, MapGuideResource.Text))
+            foreach(string s in MapGuideProvider.MapGuideUtil.EnumerateLayers(con, MapGuideResource.Text, true))
                 try
                 {
                     layers.Add(new MapGuideProvider.MapGuideLayer(con, s));
@@ -51,7 +58,7 @@ namespace LSRETester
 
             layers.Reverse();
 
-            frmMap dlg = new frmMap(env, layers.ToArray());
+            frmMap dlg = new frmMap(env, coordSys, layers.ToArray());
             dlg.ShowDialog();
         }
 
@@ -75,12 +82,12 @@ namespace LSRETester
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(this, "Kunne ikke åbne fil\nFejl: " + ex.Message, "Fejl", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(this, "Could not open file\nError: " + ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 			//show map
-			frmMap dlg = new frmMap(layer.MaxBounds, layer);
+			frmMap dlg = new frmMap(layer.MaxBounds, layer.CoordinateSystem, layer);
 			dlg.ShowDialog();
 		}
     }

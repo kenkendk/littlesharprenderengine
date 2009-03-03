@@ -11,19 +11,30 @@ namespace MapGuideProvider
 {
     public class MapGuideLayer : IProvider
     {
-        ServerConnectionI m_con;
+        private ServerConnectionI m_con;
 
-        /// <summary>
-        /// TODO: Handle scale range
-        /// </summary>
-        List<KeyValuePair<OperationOrParameter, IPointStyle>> m_pointRules = new List<KeyValuePair<OperationOrParameter, IPointStyle>>();
-        List<KeyValuePair<OperationOrParameter, ILineStyle>> m_lineRules = new List<KeyValuePair<OperationOrParameter, ILineStyle>>();
-        List<KeyValuePair<OperationOrParameter, IAreaStyle>> m_areaRules = new List<KeyValuePair<OperationOrParameter, IAreaStyle>>();
+        private class ScaleRange
+        {
+            public ScaleRange(double min, double max)
+            {
+                this.Min = min;
+                this.Max = max;
+            }
 
-        Dictionary<string, string> m_columnnames = new Dictionary<string, string>();
-        LayerDefinition m_layerDef;
+            public double Min = double.MinValue;
+            public double Max = double.MaxValue;
 
-        List<IFeature> m_featureCache = null;
+            public List<KeyValuePair<OperationOrParameter, IPointStyle>> PointRules = new List<KeyValuePair<OperationOrParameter, IPointStyle>>();
+            public List<KeyValuePair<OperationOrParameter, ILineStyle>> LineRules = new List<KeyValuePair<OperationOrParameter, ILineStyle>>();
+            public List<KeyValuePair<OperationOrParameter, IAreaStyle>> AreaRules = new List<KeyValuePair<OperationOrParameter, IAreaStyle>>();
+        }
+
+        private List<ScaleRange> m_scaleRanges = new List<ScaleRange>();
+        private Dictionary<string, string> m_columnnames = new Dictionary<string, string>();
+        private LayerDefinition m_layerDef;
+
+        private List<IFeature> m_featureCache = null;
+        private Topology.CoordinateSystems.ICoordinateSystem m_coordSys;
 
         public MapGuideLayer(ServerConnectionI con, string layername)
         {
@@ -42,8 +53,25 @@ namespace MapGuideProvider
             ExtractColumnNames(vldef.Url, m_columnnames);
             ExtractColumnNames(vldef.ToolTip, m_columnnames);
 
-            foreach(VectorScaleRangeType vsr in vldef.VectorScaleRange)
-                foreach(object style in vsr.Items)
+            try
+            {
+                FeatureSource fs = m_con.GetFeatureSource(vldef.ResourceId);
+                FdoSpatialContextList lst = fs.GetSpatialInfo();
+                if (lst != null && lst.SpatialContext != null && lst.SpatialContext.Count > 0)
+                {
+                    Topology.CoordinateSystems.CoordinateSystemFactory cf = new Topology.CoordinateSystems.CoordinateSystemFactory();
+                    m_coordSys = cf.CreateFromWkt(lst.SpatialContext[0].CoordinateSystemWkt);
+                }
+            }
+            catch
+            {
+            }
+
+            foreach (VectorScaleRangeType vsr in vldef.VectorScaleRange)
+            {
+                ScaleRange sr = new ScaleRange(vsr.MinScaleSpecified ? vsr.MinScale : 0, vsr.MaxScaleSpecified ? vsr.MaxScale : double.MaxValue);
+
+                foreach (object style in vsr.Items)
                     if (style is PointTypeStyleType)
                     {
                         if (((PointTypeStyleType)style).PointRule != null)
@@ -114,7 +142,7 @@ namespace MapGuideProvider
                                         p.Outline.ForegroundColor = System.Drawing.Color.Black;
                                     }
 
-                                    m_pointRules.Add(new KeyValuePair<OperationOrParameter, IPointStyle>(op, p));
+                                    sr.PointRules.Add(new KeyValuePair<OperationOrParameter, IPointStyle>(op, p));
                                 }
                             }
                     }
@@ -142,7 +170,7 @@ namespace MapGuideProvider
                                         lines.Add(outline);
                                     }
 
-                                    m_lineRules.Add(new KeyValuePair<OperationOrParameter, ILineStyle>(op, new LittleSharpRenderEngine.Style.Line(lines)));                                    
+                                    sr.LineRules.Add(new KeyValuePair<OperationOrParameter, ILineStyle>(op, new LittleSharpRenderEngine.Style.Line(lines)));
                                 }
 
                             }
@@ -178,10 +206,14 @@ namespace MapGuideProvider
                                         //TODO: Deal with unit/sizecontext
                                     }
 
-                                    m_areaRules.Add(new KeyValuePair<OperationOrParameter, IAreaStyle>(op, a));
+                                    sr.AreaRules.Add(new KeyValuePair<OperationOrParameter, IAreaStyle>(op, a));
                                 }
                             }
                     }
+
+                if (sr.PointRules.Count + sr.LineRules.Count + sr.AreaRules.Count > 0)
+                    m_scaleRanges.Add(sr);
+            }
         }
 
 		public IEnvelope MaxBounds
@@ -239,8 +271,23 @@ namespace MapGuideProvider
 
         #region IProvider Members
 
-        public IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, float scale)
+        public IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, double scale)
         {
+            ScaleRange sr = null;
+            foreach (ScaleRange sx in m_scaleRanges)
+                if (scale >= sx.Min && scale < sx.Max)
+                {
+                    sr = sx;
+                    break;
+                }
+
+            //Hack to test renderings speed in the test application 
+            if (sr == null && double.IsNaN(scale) && m_scaleRanges.Count > 0)
+                sr = m_scaleRanges[0];
+
+            if (sr == null)
+                return new List<IFeature>();
+
             if (m_featureCache == null)
             {
                 VectorLayerDefinitionType vldef = m_layerDef.Item as VectorLayerDefinitionType;
@@ -250,27 +297,35 @@ namespace MapGuideProvider
 
                 List<IFeature> cache = new List<IFeature>();
 
-                using (FeatureSetReader fsr = m_layerDef.CurrentConnection.QueryFeatureSource(vldef.ResourceId, vldef.FeatureName, local_filter, columns.ToArray()))
-                while(fsr.Read())
+                try
                 {
-                    IGeometry geom = fsr.Row[vldef.Geometry] as IGeometry;
+                    using (FeatureSetReader fsr = m_layerDef.CurrentConnection.QueryFeatureSource(vldef.ResourceId, vldef.FeatureName, local_filter, columns.ToArray()))
+                        while (fsr.Read())
+                        {
+                            IGeometry geom = fsr.Row[vldef.Geometry] as IGeometry;
 
-                    if (geom == null)
-                        continue;
+                            if (geom == null)
+                                continue;
 
-                    //TODO: Evaluate rules and pick the correct one
-                    if ((geom is IPoint || geom is IMultiPoint) && m_pointRules.Count > 0)
-                    {
-                        cache.Add(new FeatureImpl(geom, m_pointRules[0].Value));
-                    }
-                    else if ((geom is ILineString || geom is IMultiLineString) && m_lineRules.Count > 0)
-                    {
-                        cache.Add(new FeatureImpl(geom, m_lineRules[0].Value));
-                    }
-                    else if ((geom is IPolygon || geom is IMultiPolygon) && m_areaRules.Count > 0)
-                    {
-                        cache.Add(new FeatureImpl(geom, m_areaRules[0].Value));
-                    }
+                            //TODO: Evaluate rules and pick the correct one
+                            if ((geom is IPoint || geom is IMultiPoint) && sr.PointRules.Count > 0)
+                            {
+                                cache.Add(new FeatureImpl(geom, sr.PointRules[0].Value));
+                            }
+                            else if ((geom is ILineString || geom is IMultiLineString) && sr.LineRules.Count > 0)
+                            {
+                                cache.Add(new FeatureImpl(geom, sr.LineRules[0].Value));
+                            }
+                            else if ((geom is IPolygon || geom is IMultiPolygon) && sr.AreaRules.Count > 0)
+                            {
+                                cache.Add(new FeatureImpl(geom, sr.AreaRules[0].Value));
+                            }
+                        }
+
+                }
+                catch
+                {
+                    cache = new List<IFeature>();
                 }
 
                 m_featureCache = cache;
@@ -278,6 +333,18 @@ namespace MapGuideProvider
 
             return m_featureCache;
         }
+
+        public string ProviderName
+        {
+            get { return "WKT Provider"; }
+        }
+
+        public string DatasetName
+        {
+            get { return new ResourceIdentifier(m_layerDef.ResourceId).Name; }
+        }
+
+        public Topology.CoordinateSystems.ICoordinateSystem CoordinateSystem { get { return m_coordSys; } }
 
         #endregion
     }
