@@ -10,7 +10,7 @@ using Topology.Geometries;
 
 namespace LSRETester
 {
-    public partial class Form2 : Form
+    public partial class frmMap : Form
     {
         private List<IProvider> m_layers;
         private IEnvelope m_env;
@@ -27,14 +27,14 @@ namespace LSRETester
             Pan
         }
 
-        public Form2(IEnvelope envelope, params IProvider[] layers)
+        public frmMap(IEnvelope envelope, params IProvider[] layers)
             : this()
         {
             m_layers = new List<IProvider>(layers);
             m_env = m_origEnv = envelope;
         }
 
-        private Form2()
+        private frmMap()
         {
             InitializeComponent();
         }
@@ -44,7 +44,7 @@ namespace LSRETester
         {
             LittleSharpRenderEngine.LittleSharpRenderEngine eng = new LittleSharpRenderEngine.LittleSharpRenderEngine(m_env, null, pictureBox1.Size, Color.White);
             foreach (LittleSharpRenderEngine.IProvider provider in m_layers)
-                eng.RenderFeatures(null, provider.GetFeatures(m_env, null));
+                eng.RenderFeatures(null, provider.GetFeatures(m_env, null, float.NaN));		//Be sure to crash, when we implement the scale ;) MUAHAHAHAH!
 
             pictureBox1.Image = eng.Bitmap;
         }

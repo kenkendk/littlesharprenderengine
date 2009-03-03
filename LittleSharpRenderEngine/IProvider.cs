@@ -10,6 +10,6 @@ namespace LittleSharpRenderEngine
     /// </summary>
     public interface IProvider
     {
-        IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter);
+        IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, float scale);
     }
 }
