@@ -13,6 +13,7 @@ namespace LSRETester
         private LittleSharpRenderEngine.Style.IPointStyle m_pointStyle;
         private LittleSharpRenderEngine.Style.IAreaStyle m_areaStyle;
         private LittleSharpRenderEngine.Style.ILineStyle m_lineStyle;
+        private string m_name;
 
         public WKTProvider(string filename)
         {
@@ -23,6 +24,8 @@ namespace LSRETester
             foreach (string x in System.IO.File.ReadAllLines(filename))
                 if (x.Trim().Length > 0)
                     m_geometries.Add(rd.Read(x));
+
+            m_name = System.IO.Path.GetFileNameWithoutExtension(filename);
         }
 
 		public IEnvelope MaxBounds
@@ -71,7 +74,7 @@ namespace LSRETester
 
         #region IProvider Members
 
-        public IEnumerable<IFeature> GetFeatures(Topology.Geometries.IEnvelope bbox, string filter, float scale)
+        public IEnumerable<IFeature> GetFeatures(Topology.Geometries.IEnvelope bbox, string filter, double scale)
         {
             List<IFeature> feats = new List<IFeature>();
 			foreach (IGeometry geom in m_geometries)
@@ -88,6 +91,17 @@ namespace LSRETester
             return feats;
         }
 
+        public string ProviderName
+        {
+            get { return "WKT Provider"; }
+        }
+
+        public string DatasetName
+        {
+            get { return m_name; }
+        }
+
+        public Topology.CoordinateSystems.ICoordinateSystem CoordinateSystem { get { return null; } }
 
         #endregion
 

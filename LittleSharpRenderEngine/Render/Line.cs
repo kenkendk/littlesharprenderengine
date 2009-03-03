@@ -19,8 +19,8 @@ namespace LittleSharpRenderEngine.Render
                 return;
 
             System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
+            //TODO: Does not seems to add a single long line, but multiple line segments
             gp.AddLines(RenderUtil.CoordToPoint(line.Coordinates));
-            gp.CloseFigure();
 
             if (style.Outlines != null)
                 foreach(IOutline linestyle in style.Outlines)

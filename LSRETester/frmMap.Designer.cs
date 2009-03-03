@@ -35,9 +35,14 @@ namespace LSRETester
             this.ZoomOutButton = new System.Windows.Forms.ToolStripButton();
             this.PanButton = new System.Windows.Forms.ToolStripButton();
             this.UnzoomButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.DisableScalesButton = new System.Windows.Forms.ToolStripButton();
+            this.ToggleLayerListButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.CursorPosition = new System.Windows.Forms.ToolStripStatusLabel();
             this.CurrentScale = new System.Windows.Forms.ToolStripStatusLabel();
+            this.SpeedMeasure = new System.Windows.Forms.ToolStripStatusLabel();
+            this.LayerListBox = new System.Windows.Forms.CheckedListBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -46,9 +51,9 @@ namespace LSRETester
             // pictureBox1
             // 
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Location = new System.Drawing.Point(0, 25);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(363, 349);
+            this.pictureBox1.Size = new System.Drawing.Size(243, 302);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
@@ -63,7 +68,10 @@ namespace LSRETester
             this.ZoomInButton,
             this.ZoomOutButton,
             this.PanButton,
-            this.UnzoomButton});
+            this.UnzoomButton,
+            this.toolStripSeparator1,
+            this.DisableScalesButton,
+            this.ToggleLayerListButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -113,11 +121,37 @@ namespace LSRETester
             this.UnzoomButton.ToolTipText = "Unzoom";
             this.UnzoomButton.Click += new System.EventHandler(this.UnzoomButton_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // DisableScalesButton
+            // 
+            this.DisableScalesButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.DisableScalesButton.Image = ((System.Drawing.Image)(resources.GetObject("DisableScalesButton.Image")));
+            this.DisableScalesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DisableScalesButton.Name = "DisableScalesButton";
+            this.DisableScalesButton.Size = new System.Drawing.Size(23, 22);
+            this.DisableScalesButton.ToolTipText = "Disable scale filters (eg. render all features)";
+            this.DisableScalesButton.Click += new System.EventHandler(this.DisableScalesButton_Click);
+            // 
+            // ToggleLayerListButton
+            // 
+            this.ToggleLayerListButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ToggleLayerListButton.Image = ((System.Drawing.Image)(resources.GetObject("ToggleLayerListButton.Image")));
+            this.ToggleLayerListButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ToggleLayerListButton.Name = "ToggleLayerListButton";
+            this.ToggleLayerListButton.Size = new System.Drawing.Size(23, 22);
+            this.ToggleLayerListButton.ToolTipText = "Toggle Layer list";
+            this.ToggleLayerListButton.Click += new System.EventHandler(this.ToggleLayerListButton_Click);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CursorPosition,
-            this.CurrentScale});
+            this.CurrentScale,
+            this.SpeedMeasure});
             this.statusStrip1.Location = new System.Drawing.Point(0, 327);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(363, 22);
@@ -129,22 +163,46 @@ namespace LSRETester
             this.CursorPosition.Name = "CursorPosition";
             this.CursorPosition.Size = new System.Drawing.Size(109, 17);
             this.CursorPosition.Text = "toolStripStatusLabel1";
+            this.CursorPosition.ToolTipText = "The current mouse position";
             // 
             // CurrentScale
             // 
             this.CurrentScale.Name = "CurrentScale";
             this.CurrentScale.Size = new System.Drawing.Size(109, 17);
             this.CurrentScale.Text = "toolStripStatusLabel2";
+            this.CurrentScale.ToolTipText = "The current map scale";
             // 
-            // Form2
+            // SpeedMeasure
+            // 
+            this.SpeedMeasure.Name = "SpeedMeasure";
+            this.SpeedMeasure.Size = new System.Drawing.Size(109, 17);
+            this.SpeedMeasure.Text = "toolStripStatusLabel1";
+            this.SpeedMeasure.ToolTipText = "The time to render the last map";
+            // 
+            // LayerListBox
+            // 
+            this.LayerListBox.CheckOnClick = true;
+            this.LayerListBox.Dock = System.Windows.Forms.DockStyle.Right;
+            this.LayerListBox.FormattingEnabled = true;
+            this.LayerListBox.IntegralHeight = false;
+            this.LayerListBox.Location = new System.Drawing.Point(243, 25);
+            this.LayerListBox.Name = "LayerListBox";
+            this.LayerListBox.Size = new System.Drawing.Size(120, 302);
+            this.LayerListBox.TabIndex = 3;
+            this.LayerListBox.Visible = false;
+            this.LayerListBox.SelectedIndexChanged += new System.EventHandler(this.LayerListBox_SelectedIndexChanged);
+            this.LayerListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.LayerListBox_ItemCheck);
+            // 
+            // frmMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(363, 349);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.LayerListBox);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.pictureBox1);
-            this.Name = "Form2";
+            this.Name = "frmMap";
             this.Text = "Form2";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.SizeChanged += new System.EventHandler(this.Form2_SizeChanged);
@@ -170,6 +228,11 @@ namespace LSRETester
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel CursorPosition;
         private System.Windows.Forms.ToolStripStatusLabel CurrentScale;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton DisableScalesButton;
+        private System.Windows.Forms.ToolStripStatusLabel SpeedMeasure;
+        private System.Windows.Forms.ToolStripButton ToggleLayerListButton;
+        private System.Windows.Forms.CheckedListBox LayerListBox;
 
     }
 }

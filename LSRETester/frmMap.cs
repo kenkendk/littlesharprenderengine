@@ -19,6 +19,8 @@ namespace LSRETester
         private System.Drawing.Point m_downPoint;
         private Image m_origImage;
         private Tools m_currentTool = Tools.ZoomIn;
+        private ICoordinateSystemHelper m_coordSys;
+        private bool m_isLoading = false;
 
         private enum Tools
         {
@@ -27,10 +29,43 @@ namespace LSRETester
             Pan
         }
 
-        public frmMap(IEnvelope envelope, params IProvider[] layers) : this()
+        public frmMap(IEnvelope envelope, Topology.CoordinateSystems.ICoordinateSystem coordSys, params IProvider[] layers)
+            : this()
         {
+            m_isLoading = true;
             m_layers = new List<IProvider>(layers);
             m_env = m_origEnv = envelope;
+            m_coordSys = null;
+
+            if (coordSys != null)
+                try
+                {
+                    //This fails because the XY-M projection is not supported
+                    m_coordSys = new LittleSharpRenderEngine.CoordinateSystem.ActualCoordinateSystem(coordSys);
+                }
+                catch { }
+
+            if (m_coordSys == null && coordSys != null)
+            {
+                Topology.CoordinateSystems.IUnit unit = coordSys.GetUnits(0);
+                if (unit is Topology.CoordinateSystems.IAngularUnit)
+                {
+                    double radians = (unit as Topology.CoordinateSystems.IAngularUnit).RadiansPerUnit;
+                    m_coordSys = new LittleSharpRenderEngine.CoordinateSystem.DegreeBasedCoordinateSystem();
+                }
+                else if (unit is Topology.CoordinateSystems.ILinearUnit)
+                    m_coordSys = new LittleSharpRenderEngine.CoordinateSystem.MeterBasedCoordsys(((Topology.CoordinateSystems.ILinearUnit)unit).MetersPerUnit, ((Topology.CoordinateSystems.ILinearUnit)unit).MetersPerUnit);
+            }
+
+
+            if (m_coordSys == null)
+                m_coordSys = new LittleSharpRenderEngine.CoordinateSystem.MeterBasedCoordsys();
+
+
+            foreach (IProvider l in m_layers)
+                LayerListBox.Items.Add(l.DatasetName, CheckState.Checked);
+
+            m_isLoading = false;
         }
 
         private frmMap()
@@ -41,11 +76,31 @@ namespace LSRETester
         //TODO: Use onDraw instead of this...
         private void Form2_Resize(object sender, EventArgs e)
         {
-            LittleSharpRenderEngine.LittleSharpRenderEngine eng = new LittleSharpRenderEngine.LittleSharpRenderEngine(m_env, null, pictureBox1.Size, Color.White);
-            foreach (LittleSharpRenderEngine.IProvider provider in m_layers)
-                eng.RenderFeatures(null, provider.GetFeatures(m_env, null, float.NaN));		//Be sure to crash, when we implement the scale ;) MUAHAHAHAH!
+            if (m_isLoading)
+                return;
 
-            pictureBox1.Image = eng.Bitmap;
+            DateTime begin = DateTime.Now;
+            try
+            {
+                this.Cursor = Cursors.WaitCursor;
+
+                double scale = m_coordSys.CalculateScale(m_env, pictureBox1.Size);
+                m_env = m_coordSys.AdjustBoundingBox(m_env, scale, pictureBox1.Size);
+
+                LittleSharpRenderEngine.LittleSharpRenderEngine eng = new LittleSharpRenderEngine.LittleSharpRenderEngine(m_env, m_coordSys.CoordinateSystem, pictureBox1.Size, Color.White);
+                for(int i = 0;i < m_layers.Count; i++)
+                    if (LayerListBox.GetItemChecked(i))
+                        eng.RenderFeatures(m_coordSys.CoordinateSystem, m_layers[i].GetFeatures(m_env, null, DisableScalesButton.Checked ? double.NaN : scale));
+
+                pictureBox1.Image = eng.Bitmap;
+                CurrentScale.Text = "1:" + scale.ToString("0.00");
+            }
+            finally
+            {
+                this.Cursor = Cursors.Arrow;
+            }
+
+            SpeedMeasure.Text = (DateTime.Now - begin).ToString();
         }
 
         private void Form2_SizeChanged(object sender, EventArgs e)
@@ -70,6 +125,7 @@ namespace LSRETester
 
             if (m_downCoord != null)
             {
+                //TODO: Use onDraw instead of this...
                 switch (m_currentTool)
                 {
                     case Tools.Pan:
@@ -210,6 +266,42 @@ namespace LSRETester
             ZoomOutButton.Checked = ZoomInButton.Checked = false;
             PanButton.Checked = true;
             m_currentTool = Tools.Pan;
+        }
+
+        private void DisableScalesButton_Click(object sender, EventArgs e)
+        {
+            DisableScalesButton.Checked = !DisableScalesButton.Checked;
+            Form2_Resize(sender, e);
+        }
+
+        private void ToggleLayerListButton_Click(object sender, EventArgs e)
+        {
+            ToggleLayerListButton.Checked = !ToggleLayerListButton.Checked;
+            LayerListBox.Visible = ToggleLayerListButton.Checked;
+            Form2_Resize(sender, e);
+        }
+
+        private void LayerListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LayerListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (m_isLoading)
+                return;
+
+            try
+            {
+                m_isLoading = true;
+                LayerListBox.SetItemChecked(e.Index, e.NewValue == CheckState.Checked);
+            }
+            finally
+            {
+                m_isLoading = false;
+            }
+
+            Form2_Resize(sender, e);
         }
     }
 }
