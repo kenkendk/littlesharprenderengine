@@ -82,7 +82,7 @@ namespace EBop.MapObjects.MapInfo
 	/// </remarks>
 	public abstract class EnumImpl : IEnumerable, IObjectProvider 
     {
-		public readonly int count;
+		private readonly int count;
 
 		protected EnumImpl(int count) 
         {
@@ -553,7 +553,7 @@ namespace EBop.MapObjects.MapInfo
 	/// <summary>
 	/// Represents a single feature beloning to a layer.
 	/// </summary>
-	public class Feature : IDisposable 
+	public class Feature : IDisposable, LittleSharpRenderEngine.IFeature
     {
 		/// <summary>
 		/// Handle used to manipulate the object in the C API.
@@ -575,7 +575,9 @@ namespace EBop.MapObjects.MapInfo
 		/// The set of parts comprising this feature.
 		/// </summary>
 		public readonly Parts Parts;
-
+		/// <summary>
+		/// The actual style ... added by mkv
+		/// </summary>
 		public readonly FeatureStyle Style;
 
 		private DataValues m_data;
@@ -663,6 +665,89 @@ namespace EBop.MapObjects.MapInfo
         {
 			Dispose(false);
 		}
+
+		#region IFeature Members
+
+		private Topology.Geometries.IGeometry m_IGeometri;
+		private LittleSharpRenderEngine.Style.IStyle m_IStyle;
+
+		public Topology.Geometries.IGeometry Geometry
+		{
+			get 
+			{
+				if (m_IGeometri != null) return m_IGeometri;
+				switch (this.Type)		
+				{
+					case FeatureType.TABFC_NoGeom:
+						return null;
+					case FeatureType.TABFC_Point:
+						m_IGeometri = new Topology.Geometries.Point(this.Parts[0].Vertices[0]);
+						break;
+					case FeatureType.TABFC_Polyline:
+						Topology.Geometries.ICoordinate[] arr = new Topology.Geometries.ICoordinate[this.Parts[0].Vertices.Count];
+						int i = 0;
+						foreach (Topology.Geometries.ICoordinate c in this.Parts[0].Vertices)
+						{
+							arr[i++] = c;
+						}
+						m_IGeometri = new Topology.Geometries.LineString(arr);
+						break;
+					case FeatureType.TABFC_Region:
+						Topology.Geometries.Polygon[] polygons = new Topology.Geometries.Polygon[this.Parts.Count];
+						int p = 0;
+						foreach (Part pa in this.Parts)
+						{
+							Topology.Geometries.ICoordinate[] coords = new Topology.Geometries.ICoordinate[pa.Vertices.Count];
+							int ii = 0;
+							foreach (Topology.Geometries.ICoordinate c in pa.Vertices)
+							{
+								coords[ii++] = c;
+							}
+							polygons[p++] = new Topology.Geometries.Polygon(new Topology.Geometries.LinearRing(coords));
+						}
+						if (polygons.Length > 1) m_IGeometri = new Topology.Geometries.MultiPolygon(polygons);
+						else m_IGeometri = polygons[0];
+						break;
+					default:
+						throw new Exception("MapInfo type " + this.Type.ToString() + " not yet supported");
+				}
+				return m_IGeometri;
+			}
+		}
+
+		LittleSharpRenderEngine.Style.IStyle LittleSharpRenderEngine.IFeature.Style
+		{
+			get 
+			{
+				if (m_IStyle != null) return m_IStyle;
+				switch (this.Type)
+				{
+					case FeatureType.TABFC_NoGeom:
+						return null;
+					case FeatureType.TABFC_Point:
+						LittleSharpRenderEngine.Style.Point ps = new LittleSharpRenderEngine.Style.Point();
+						ps.Type = LittleSharpRenderEngine.Style.Point.PointType.Circle;
+						m_IStyle = ps;
+						break;
+					case FeatureType.TABFC_Polyline:
+						m_IStyle = new LittleSharpRenderEngine.Style.Line(System.Drawing.Color.FromArgb(this.Style.PenColor), this.Style.PenWidth);
+						break;
+					case FeatureType.TABFC_Region:
+						LittleSharpRenderEngine.Style.Area a = new LittleSharpRenderEngine.Style.Area();
+						a.Outline.ForegroundColor = System.Drawing.Color.FromArgb(255, System.Drawing.Color.FromArgb(this.Style.PenColor));
+						a.Outline.Width = this.Style.PenWidth;
+						a.Fill.BackgroundColor = System.Drawing.Color.FromArgb(255, System.Drawing.Color.FromArgb(this.Style.BrushBackColor));
+						a.Fill.ForegroundColor = System.Drawing.Color.FromArgb(255, System.Drawing.Color.FromArgb(this.Style.BrushForeColor));
+						m_IStyle = a;
+						break;
+					default:
+						throw new Exception("MapInfo type " + this.Type.ToString() + " not yet supported");
+				}
+				return m_IStyle;
+			}
+		}
+
+		#endregion
 	}
 
 	/// <summary>

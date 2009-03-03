@@ -15,8 +15,7 @@ namespace LittleSharpRenderEngine.Render
 
         public void Render(LittleSharpRenderEngine engine, Graphics graphics, IPolygon polygon, IAreaStyle style)
         {
-            if (polygon == null || style == null)
-                return;
+            if (polygon == null || style == null) return;
 
             System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
 
@@ -25,11 +24,9 @@ namespace LittleSharpRenderEngine.Render
                 gp.AddPolygon(RenderUtil.CoordToPoint(l.Coordinates));
             gp.CloseFigure();
 
-            if (style.Fill != null)
-                RenderUtil.RenderFill(engine, graphics, gp, style.Fill);
+            if (style.Fill != null) RenderUtil.RenderFill(engine, graphics, gp, style.Fill);
 
-            if (style.Outline != null)
-                RenderUtil.RenderOutline(engine, graphics, gp, style.Outline);
+            if (style.Outline != null) RenderUtil.RenderOutline(engine, graphics, gp, style.Outline);
         }
     }
 }

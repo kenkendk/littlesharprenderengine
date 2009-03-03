@@ -53,8 +53,7 @@ namespace LittleSharpRenderEngine
 
         public void RenderFeatures(ICoordinateSystem coordsys, IEnumerable<IFeature> items)
         {
-            if (items == null)
-                return;
+            if (items == null) return;
 
             m_sourceCoordsys = coordsys;
 
@@ -64,15 +63,13 @@ namespace LittleSharpRenderEngine
                 if (ProjectionConverter != null)
                 {
                     geom = ProjectionConverter(this, geom);
-                    if (geom == null)
-                        continue;
+                    if (geom == null) continue;
                 }
 
                 if (Generalizer != null)
                 {
                     geom = Generalizer(this, geom);
-                    if (geom == null)
-                        continue;
+                    if (geom == null) continue;
                 }
 
                 if (CoordinateMapper != null)
@@ -80,8 +77,7 @@ namespace LittleSharpRenderEngine
                 else
                     geom = PrimitiveCoordinateMapper(geom);
 
-                if (geom == null)
-                    continue;
+                if (geom == null) continue;
 
                 Draw(geom, g.Style);
             }
@@ -172,23 +168,19 @@ namespace LittleSharpRenderEngine
 
         private void Draw(IGeometry geom, IStyle style)
         {
-            if (geom == null || style == null)
-                return;
+            if (geom == null || style == null) return;
 
             if (geom is IPoint)
             {
-                if (PointRender != null)
-                    PointRender(this, m_graphics, geom as IPoint, style as IPointStyle);
+                if (PointRender != null) PointRender(this, m_graphics, geom as IPoint, style as IPointStyle);
             }
             else if (geom is ILineString)
             {
-                if (LineStringRender != null)
-                    LineStringRender(this, m_graphics, geom as ILineString, style as ILineStyle);
+                if (LineStringRender != null) LineStringRender(this, m_graphics, geom as ILineString, style as ILineStyle);
             }
             else if (geom is IPolygon)
             {
-                if (PolygonRender != null)
-                    PolygonRender(this, m_graphics, geom as IPolygon, style as IAreaStyle);
+                if (PolygonRender != null) PolygonRender(this, m_graphics, geom as IPolygon, style as IAreaStyle);
             }
             else if (geom is IGeometryCollection)
             {

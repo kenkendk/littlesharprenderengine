@@ -25,6 +25,14 @@ namespace LSRETester
                     m_geometries.Add(rd.Read(x));
         }
 
+		public IEnvelope MaxBounds
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
         private void SetDefaultStyles()
         {
             LittleSharpRenderEngine.Style.Point p = new LittleSharpRenderEngine.Style.Point();
