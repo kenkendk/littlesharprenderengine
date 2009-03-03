@@ -231,7 +231,7 @@ namespace MapGuideProvider
 
         #region IProvider Members
 
-        public IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter)
+        public IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, float scale)
         {
             if (m_featureCache == null)
             {

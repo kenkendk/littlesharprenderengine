@@ -9,25 +9,25 @@ using Topology.Geometries;
 
 namespace LSRETester
 {
-    public partial class Form1 : Form
+    public partial class frmConnect : Form
     {
-        public Form1()
+        public frmConnect()
         {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void m_RenderWKTButton_Click(object sender, EventArgs e)
         {
             Topology.IO.WKTReader rd = new Topology.IO.WKTReader();
             IEnvelope bounds = rd.Read(BoundWKT.Text).EnvelopeInternal;
 
             LittleSharpRenderEngine.IProvider provider = new WKTProvider(WKTFile.Text);
 
-            Form2 dlg = new Form2(bounds, provider);
+            frmMap dlg = new frmMap(bounds, provider);
             dlg.ShowDialog();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void m_RenderMapGuideButton_Click(object sender, EventArgs e)
         {
             OSGeo.MapGuide.MaestroAPI.ServerConnectionI con = MapGuideProvider.MapGuideUtil.CreateConnection(
                 MapGuideURL.Text,
@@ -50,8 +50,25 @@ namespace LSRETester
 
             layers.Reverse();
 
-            Form2 dlg = new Form2(env, layers.ToArray());
+            frmMap dlg = new frmMap(env, layers.ToArray());
             dlg.ShowDialog();
         }
+
+		private void m_MapInfoFileButton_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog dlg = new OpenFileDialog();
+			dlg.Title = "Select MapInfo-file";
+			dlg.Filter = "TAB|*.tab";
+			if (dlg.ShowDialog(this) == DialogResult.OK)
+			{
+				m_mapinfofiletext.Text = dlg.FileName;
+			}
+		}
+
+		private void m_RenderMapInfoButton_Click(object sender, EventArgs e)
+		{
+			EBop.MapObjects.MapInfo.Layer l = new EBop.MapObjects.MapInfo.Layer(m_mapinfofiletext.Text);
+			
+		}
     }
 }

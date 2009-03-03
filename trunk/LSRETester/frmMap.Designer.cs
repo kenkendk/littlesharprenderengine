@@ -1,6 +1,6 @@
 namespace LSRETester
 {
-    partial class Form2
+    partial class frmMap
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@ namespace LSRETester
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMap));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.ZoomInButton = new System.Windows.Forms.ToolStripButton();
