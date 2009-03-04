@@ -6,7 +6,7 @@ using Topology.Geometries;
 
 namespace LSRETester
 {
-    class SimpleFeature : LittleSharpRenderEngine.IFeature
+    struct SimpleFeature : LittleSharpRenderEngine.IFeature
     {
         private IStyle m_style;
         private IGeometry m_geom;

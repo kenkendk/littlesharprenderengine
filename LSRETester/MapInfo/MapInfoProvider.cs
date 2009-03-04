@@ -40,13 +40,24 @@ namespace LSRETester
 			}
 		}
 
+		public IEnumerable<IFeature> GetFeatures(IGeometry geom, string filter, double scale)
+		{
+			LinkedList<IFeature> ret = new LinkedList<IFeature>();
+			foreach (Feature f in m_layer.Features)
+			{
+				//linear cull
+				if (geom.Intersects(f.Geometry)) ret.AddLast(f);
+			}
+			return ret;
+		}
+
 		public IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, double scale)
 		{
 			LinkedList<IFeature> ret = new LinkedList<IFeature>();
 			foreach (Feature f in m_layer.Features)
 			{
 				//linear cull
-				if(bbox.Intersects(f.Geometry.EnvelopeInternal)) ret.AddLast(f);
+				if (bbox.Intersects(f.Geometry.EnvelopeInternal)) ret.AddLast(f);
 			}
 			return ret;
 		}

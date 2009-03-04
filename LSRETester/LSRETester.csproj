@@ -88,6 +88,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SimpleFeature.cs" />
+    <Compile Include="SQLServerProvider.cs" />
     <Compile Include="WKTProvider.cs" />
   </ItemGroup>
   <ItemGroup>

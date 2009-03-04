@@ -74,7 +74,24 @@ namespace LSRETester
 
         #region IProvider Members
 
-        public IEnumerable<IFeature> GetFeatures(Topology.Geometries.IEnvelope bbox, string filter, double scale)
+		public IEnumerable<IFeature> GetFeatures(IGeometry bbox, string filter, double scale)
+		{
+			List<IFeature> feats = new List<IFeature>();
+			foreach (IGeometry geom in m_geometries)
+			{
+				if (bbox != null || geom.Intersects(bbox))
+					if (geom is IPoint)
+						feats.Add(new SimpleFeature(geom, m_pointStyle));
+					else if (geom is ILineString)
+						feats.Add(new SimpleFeature(geom, m_lineStyle));
+					else if (geom is IPolygon)
+						feats.Add(new SimpleFeature(geom, m_areaStyle));
+			}
+
+			return feats;
+		}
+
+		public IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, double scale)
         {
             List<IFeature> feats = new List<IFeature>();
 			foreach (IGeometry geom in m_geometries)

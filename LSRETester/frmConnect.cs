@@ -90,5 +90,41 @@ namespace LSRETester
 			frmMap dlg = new frmMap(layer.MaxBounds, layer.CoordinateSystem, layer);
 			dlg.ShowDialog();
 		}
+
+		private void m_sqlservertablecombo_GotFocus(object sender, System.EventArgs e)
+		{
+			try
+			{
+				if (m_sqlservertablecombo.DataSource != null) return;
+				SQLServerProvider conn = new SQLServerProvider(m_sqlserverconnectiontext.Text);
+				string[] tables = conn.GetTablenames();
+				m_sqlservertablecombo.DataSource = tables;
+				if (tables == null) m_sqlservertablecombo.DataSource = new string[] { };	//don't load again
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(this, "Fejl under forbindelse til SQL Server\nFejl: " + ex.Message, "Fejl", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void m_rendersqlserverbutton_Click(object sender, EventArgs e)
+		{
+			SQLServerProvider layer = new SQLServerProvider(m_sqlserverconnectiontext.Text, m_sqlservertablecombo.Text, null);
+
+			//test connection
+			try
+			{
+				layer.GeoColumn = layer.GetGeoColumn();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(this, "Fejl under forbindelse til SQL Server\nFejl: " + ex.Message, "Fejl", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			//show map
+			frmMap dlg = new frmMap(layer.MaxBounds, layer.CoordinateSystem, layer);
+			dlg.ShowDialog();
+		}
     }
 }

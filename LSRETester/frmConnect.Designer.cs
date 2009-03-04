@@ -46,6 +46,11 @@ namespace LSRETester
 			this.label7 = new System.Windows.Forms.Label();
 			this.m_MapInfoFileButton = new System.Windows.Forms.Button();
 			this.m_RenderMapInfoButton = new System.Windows.Forms.Button();
+			this.label8 = new System.Windows.Forms.Label();
+			this.m_sqlserverconnectiontext = new System.Windows.Forms.TextBox();
+			this.m_rendersqlserverbutton = new System.Windows.Forms.Button();
+			this.m_sqlservertablecombo = new System.Windows.Forms.ComboBox();
+			this.label9 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// BoundWKT
@@ -142,7 +147,7 @@ namespace LSRETester
 			this.MapGuideURL.Name = "MapGuideURL";
 			this.MapGuideURL.Size = new System.Drawing.Size(496, 20);
 			this.MapGuideURL.TabIndex = 8;
-			this.MapGuideURL.Text = "http://localhost/mapguide/";
+			this.MapGuideURL.Text = "http://geomgos/mapguide/";
 			// 
 			// MapGuideUsername
 			// 
@@ -221,11 +226,64 @@ namespace LSRETester
 			this.m_RenderMapInfoButton.UseVisualStyleBackColor = true;
 			this.m_RenderMapInfoButton.Click += new System.EventHandler(this.m_RenderMapInfoButton_Click);
 			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(24, 336);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(61, 13);
+			this.label8.TabIndex = 22;
+			this.label8.Text = "Connection";
+			// 
+			// m_sqlserverconnectiontext
+			// 
+			this.m_sqlserverconnectiontext.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.m_sqlserverconnectiontext.Location = new System.Drawing.Point(88, 336);
+			this.m_sqlserverconnectiontext.Name = "m_sqlserverconnectiontext";
+			this.m_sqlserverconnectiontext.Size = new System.Drawing.Size(496, 20);
+			this.m_sqlserverconnectiontext.TabIndex = 21;
+			this.m_sqlserverconnectiontext.Text = "Provider=SQLNCLI10;Server=GeografSQL;Database=Testdatabase;Uid=mkv;Pwd=kvist;";
+			// 
+			// m_rendersqlserverbutton
+			// 
+			this.m_rendersqlserverbutton.Location = new System.Drawing.Point(240, 392);
+			this.m_rendersqlserverbutton.Name = "m_rendersqlserverbutton";
+			this.m_rendersqlserverbutton.Size = new System.Drawing.Size(112, 24);
+			this.m_rendersqlserverbutton.TabIndex = 23;
+			this.m_rendersqlserverbutton.Text = "Render SQL server";
+			this.m_rendersqlserverbutton.UseVisualStyleBackColor = true;
+			this.m_rendersqlserverbutton.Click += new System.EventHandler(this.m_rendersqlserverbutton_Click);
+			// 
+			// m_sqlservertablecombo
+			// 
+			this.m_sqlservertablecombo.FormattingEnabled = true;
+			this.m_sqlservertablecombo.Location = new System.Drawing.Point(88, 360);
+			this.m_sqlservertablecombo.Name = "m_sqlservertablecombo";
+			this.m_sqlservertablecombo.Size = new System.Drawing.Size(176, 21);
+			this.m_sqlservertablecombo.TabIndex = 24;
+			this.m_sqlservertablecombo.Text = "MAT_REG";
+			this.m_sqlservertablecombo.GotFocus += new System.EventHandler(this.m_sqlservertablecombo_GotFocus);
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(24, 360);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(34, 13);
+			this.label9.TabIndex = 25;
+			this.label9.Text = "Table";
+			// 
 			// frmConnect
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(595, 560);
+			this.Controls.Add(this.label9);
+			this.Controls.Add(this.m_sqlservertablecombo);
+			this.Controls.Add(this.m_rendersqlserverbutton);
+			this.Controls.Add(this.label8);
+			this.Controls.Add(this.m_sqlserverconnectiontext);
 			this.Controls.Add(this.m_RenderMapInfoButton);
 			this.Controls.Add(this.m_MapInfoFileButton);
 			this.Controls.Add(this.m_mapinfofiletext);
@@ -271,6 +329,11 @@ namespace LSRETester
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Button m_MapInfoFileButton;
 		private System.Windows.Forms.Button m_RenderMapInfoButton;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.TextBox m_sqlserverconnectiontext;
+		private System.Windows.Forms.Button m_rendersqlserverbutton;
+		private System.Windows.Forms.ComboBox m_sqlservertablecombo;
+		private System.Windows.Forms.Label label9;
     }
 }
 
