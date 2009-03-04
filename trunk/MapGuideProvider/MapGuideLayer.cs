@@ -271,7 +271,12 @@ namespace MapGuideProvider
 
         #region IProvider Members
 
-        public IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, double scale)
+		public IEnumerable<IFeature> GetFeatures(IGeometry geom, string filter, double scale)
+		{
+			return null;
+		}
+
+		public IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, double scale)
         {
             ScaleRange sr = null;
             foreach (ScaleRange sx in m_scaleRanges)

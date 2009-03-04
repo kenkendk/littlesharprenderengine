@@ -29,8 +29,7 @@ namespace LSRETester
             Pan
         }
 
-        public frmMap(IEnvelope envelope, Topology.CoordinateSystems.ICoordinateSystem coordSys, params IProvider[] layers)
-            : this()
+        public frmMap(IEnvelope envelope, Topology.CoordinateSystems.ICoordinateSystem coordSys, params IProvider[] layers) : this()
         {
             m_isLoading = true;
             m_layers = new List<IProvider>(layers);
@@ -79,7 +78,7 @@ namespace LSRETester
             if (m_isLoading)
                 return;
 
-            DateTime begin = DateTime.Now;
+			int starttime = Environment.TickCount;
             try
             {
                 this.Cursor = Cursors.WaitCursor;
@@ -100,7 +99,8 @@ namespace LSRETester
                 this.Cursor = Cursors.Arrow;
             }
 
-            SpeedMeasure.Text = (DateTime.Now - begin).ToString();
+			int endtime = Environment.TickCount;
+            SpeedMeasure.Text = Math.Round(1000.0 / (endtime - starttime), 1) + " fps";
         }
 
         private void Form2_SizeChanged(object sender, EventArgs e)

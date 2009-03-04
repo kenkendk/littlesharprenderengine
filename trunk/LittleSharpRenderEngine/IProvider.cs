@@ -13,11 +13,20 @@ namespace LittleSharpRenderEngine
         /// <summary>
         /// Returns all features in a given area, matching a filter, and visible at a given scale
         /// </summary>
-        /// <param name="bbox">The bounding rectangle that limits the number of features</param>
+		/// <param name="bbox">The bounding geometry that limits the number of features.</param>
         /// <param name="filter">An optional filter applied to the features</param>
         /// <param name="scale">The scale to display the features at</param>
         /// <returns>all features in the given area, matching the filter, and visible at the given scale</returns>
         IEnumerable<IFeature> GetFeatures(IEnvelope bbox, string filter, double scale);
+
+		/// <summary>
+		/// Returns all features in a given area, matching a filter, and visible at a given scale
+		/// </summary>
+		/// <param name="geom">The bounding geometry that limits the number of features. Notice that this can be a point</param>
+		/// <param name="filter">An optional filter applied to the features</param>
+		/// <param name="scale">The scale to display the features at</param>
+		/// <returns>all features in the given area, matching the filter, and visible at the given scale</returns>
+		IEnumerable<IFeature> GetFeatures(IGeometry geom, string filter, double scale);
 
         /// <summary>
         /// The name of the provider, for internal use

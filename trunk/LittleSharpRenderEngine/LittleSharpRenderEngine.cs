@@ -31,7 +31,7 @@ namespace LittleSharpRenderEngine
         private ICoordinateSystem m_sourceCoordsys;
         private Graphics m_graphics;
 
-        private double m_scale;
+        //private double m_scale;
 
         public LittleSharpRenderEngine(IEnvelope bbox, ICoordinateSystem coordinateSystem, Size size, Color background)
         {
