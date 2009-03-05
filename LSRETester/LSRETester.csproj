@@ -58,6 +58,8 @@
     </Compile>
     <Compile Include="MapInfo\MapInfoProvider.cs" />
     <Compile Include="MapInfo\MiApi.cs" />
+    <Compile Include="MapInfo\MIFParser.cs" />
+    <Compile Include="MapInfo\MIFProvider.cs" />
     <Compile Include="MapInfo\MiWrapper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

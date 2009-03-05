@@ -48,16 +48,23 @@ namespace LSRETester
 		public string GetGeoColumn()
 		{
 			OpenConnection();
+			OleDbDataReader dr = null;
 			try
 			{
-				DataTable schema = m_conn.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, new object[] { null, null, m_tablename });
-				DataRow[] georows = schema.Select("SS_UDT_NAME = 'geometry'");
-
-				return (georows != null && georows.Length > 0 ? georows[0]["COLUMN_NAME"].ToString() : null);
+				//find all geometry columns
+				OleDbCommand cmd = m_conn.CreateCommand();
+				cmd.CommandText = "SELECT syscolumns.name AS COLUMN_NAME, systypes.name AS TYPE_NAME, sysobjects.name AS TABLE_NAME FROM (syscolumns INNER JOIN sysobjects ON syscolumns.id = sysobjects.id) INNER JOIN systypes ON syscolumns.xtype = systypes.xtype WHERE systypes.name='geometry' AND sysobjects.name = '" + m_tablename + "';";
+				dr = cmd.ExecuteReader();
+				if (dr.Read()) return (string)dr.GetValue(0);
+				return null;
 			}
 			catch (Exception ex)
 			{
 				throw new Exception("Couldn't load geo column from table " + m_tablename + "\nError: " + ex.Message);
+			}
+			finally
+			{
+				if(dr != null) dr.Close();
 			}
 		}
 
