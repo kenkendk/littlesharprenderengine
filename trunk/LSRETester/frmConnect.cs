@@ -126,5 +126,23 @@ namespace LSRETester
 			frmMap dlg = new frmMap(layer.MaxBounds, layer.CoordinateSystem, layer);
 			dlg.ShowDialog();
 		}
+
+		private void m_rendermifbutton_Click(object sender, EventArgs e)
+		{
+			MIFProvider layer = null;
+			try
+			{
+				layer = new MIFProvider(m_mifpathtext.Text);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(this, "Could not open file\nError: " + ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			//show map
+			frmMap dlg = new frmMap(layer.MaxBounds, layer.CoordinateSystem, layer);
+			dlg.ShowDialog();
+		}
     }
 }

@@ -51,6 +51,9 @@ namespace LSRETester
 			this.m_rendersqlserverbutton = new System.Windows.Forms.Button();
 			this.m_sqlservertablecombo = new System.Windows.Forms.ComboBox();
 			this.label9 = new System.Windows.Forms.Label();
+			this.m_rendermifbutton = new System.Windows.Forms.Button();
+			this.m_mifpathtext = new System.Windows.Forms.TextBox();
+			this.label10 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// BoundWKT
@@ -243,7 +246,7 @@ namespace LSRETester
 			this.m_sqlserverconnectiontext.Name = "m_sqlserverconnectiontext";
 			this.m_sqlserverconnectiontext.Size = new System.Drawing.Size(496, 20);
 			this.m_sqlserverconnectiontext.TabIndex = 21;
-			this.m_sqlserverconnectiontext.Text = "Provider=SQLNCLI10;Server=GeografSQL;Database=Testdatabase;Uid=mkv;Pwd=kvist;";
+			this.m_sqlserverconnectiontext.Text = "Provider=sqloledb;Server=GeografSQL;Database=Testdatabase;Uid=mkv;Pwd=kvist;";
 			// 
 			// m_rendersqlserverbutton
 			// 
@@ -274,11 +277,43 @@ namespace LSRETester
 			this.label9.TabIndex = 25;
 			this.label9.Text = "Table";
 			// 
+			// m_rendermifbutton
+			// 
+			this.m_rendermifbutton.Location = new System.Drawing.Point(240, 456);
+			this.m_rendermifbutton.Name = "m_rendermifbutton";
+			this.m_rendermifbutton.Size = new System.Drawing.Size(112, 24);
+			this.m_rendermifbutton.TabIndex = 29;
+			this.m_rendermifbutton.Text = "Render MIF";
+			this.m_rendermifbutton.UseVisualStyleBackColor = true;
+			this.m_rendermifbutton.Click += new System.EventHandler(this.m_rendermifbutton_Click);
+			// 
+			// m_mifpathtext
+			// 
+			this.m_mifpathtext.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.m_mifpathtext.Location = new System.Drawing.Point(88, 432);
+			this.m_mifpathtext.Name = "m_mifpathtext";
+			this.m_mifpathtext.Size = new System.Drawing.Size(496, 20);
+			this.m_mifpathtext.TabIndex = 27;
+			this.m_mifpathtext.Text = "..\\..\\Testdata\\testpolykom.mif";
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(24, 432);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(23, 13);
+			this.label10.TabIndex = 26;
+			this.label10.Text = "File";
+			// 
 			// frmConnect
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(595, 560);
+			this.Controls.Add(this.m_rendermifbutton);
+			this.Controls.Add(this.m_mifpathtext);
+			this.Controls.Add(this.label10);
 			this.Controls.Add(this.label9);
 			this.Controls.Add(this.m_sqlservertablecombo);
 			this.Controls.Add(this.m_rendersqlserverbutton);
@@ -334,6 +369,9 @@ namespace LSRETester
 		private System.Windows.Forms.Button m_rendersqlserverbutton;
 		private System.Windows.Forms.ComboBox m_sqlservertablecombo;
 		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Button m_rendermifbutton;
+		private System.Windows.Forms.TextBox m_mifpathtext;
+		private System.Windows.Forms.Label label10;
     }
 }
 
