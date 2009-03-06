@@ -56,6 +56,7 @@
     <Compile Include="frmMap.Designer.cs">
       <DependentUpon>frmMap.cs</DependentUpon>
     </Compile>
+    <Compile Include="GenericWKBDatabaseWithBoundingBoxColumns.cs" />
     <Compile Include="MapInfo\MapInfoProvider.cs" />
     <Compile Include="MapInfo\MiApi.cs" />
     <Compile Include="MapInfo\MIFParser.cs" />

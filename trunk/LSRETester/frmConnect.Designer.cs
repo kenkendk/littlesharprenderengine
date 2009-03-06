@@ -54,6 +54,10 @@ namespace LSRETester
 			this.m_rendermifbutton = new System.Windows.Forms.Button();
 			this.m_mifpathtext = new System.Windows.Forms.TextBox();
 			this.label10 = new System.Windows.Forms.Label();
+			this.m_genericdbbutton = new System.Windows.Forms.Button();
+			this.m_genericdbconnectiontext = new System.Windows.Forms.TextBox();
+			this.label11 = new System.Windows.Forms.Label();
+			this.m_uploadmiftodbbutton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// BoundWKT
@@ -306,11 +310,55 @@ namespace LSRETester
 			this.label10.TabIndex = 26;
 			this.label10.Text = "File";
 			// 
+			// m_genericdbbutton
+			// 
+			this.m_genericdbbutton.Location = new System.Drawing.Point(240, 520);
+			this.m_genericdbbutton.Name = "m_genericdbbutton";
+			this.m_genericdbbutton.Size = new System.Drawing.Size(112, 24);
+			this.m_genericdbbutton.TabIndex = 32;
+			this.m_genericdbbutton.Text = "Render Generic DB";
+			this.m_genericdbbutton.UseVisualStyleBackColor = true;
+			this.m_genericdbbutton.Click += new System.EventHandler(this.m_genericdbbutton_Click);
+			// 
+			// m_genericdbconnectiontext
+			// 
+			this.m_genericdbconnectiontext.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.m_genericdbconnectiontext.Location = new System.Drawing.Point(88, 496);
+			this.m_genericdbconnectiontext.Name = "m_genericdbconnectiontext";
+			this.m_genericdbconnectiontext.Size = new System.Drawing.Size(496, 20);
+			this.m_genericdbconnectiontext.TabIndex = 31;
+			this.m_genericdbconnectiontext.Text = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\\workspace\\LittleSharpRenderEngine" +
+				"\\LSRETester\\Testdata\\GenericDatabase.mdb;";
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(24, 496);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(61, 13);
+			this.label11.TabIndex = 30;
+			this.label11.Text = "Connection";
+			// 
+			// m_uploadmiftodbbutton
+			// 
+			this.m_uploadmiftodbbutton.Location = new System.Drawing.Point(120, 520);
+			this.m_uploadmiftodbbutton.Name = "m_uploadmiftodbbutton";
+			this.m_uploadmiftodbbutton.Size = new System.Drawing.Size(112, 24);
+			this.m_uploadmiftodbbutton.TabIndex = 33;
+			this.m_uploadmiftodbbutton.Text = "Upload MIF To DB";
+			this.m_uploadmiftodbbutton.UseVisualStyleBackColor = true;
+			this.m_uploadmiftodbbutton.Click += new System.EventHandler(this.m_uploadmiftodbbutton_Click);
+			// 
 			// frmConnect
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(595, 560);
+			this.Controls.Add(this.m_uploadmiftodbbutton);
+			this.Controls.Add(this.m_genericdbbutton);
+			this.Controls.Add(this.m_genericdbconnectiontext);
+			this.Controls.Add(this.label11);
 			this.Controls.Add(this.m_rendermifbutton);
 			this.Controls.Add(this.m_mifpathtext);
 			this.Controls.Add(this.label10);
@@ -372,6 +420,10 @@ namespace LSRETester
 		private System.Windows.Forms.Button m_rendermifbutton;
 		private System.Windows.Forms.TextBox m_mifpathtext;
 		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Button m_genericdbbutton;
+		private System.Windows.Forms.TextBox m_genericdbconnectiontext;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Button m_uploadmiftodbbutton;
     }
 }
 

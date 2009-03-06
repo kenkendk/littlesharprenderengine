@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Topology.Geometries;
+using System.Data.OleDb;
 
 namespace LSRETester
 {
@@ -143,6 +144,105 @@ namespace LSRETester
 			//show map
 			frmMap dlg = new frmMap(layer.MaxBounds, layer.CoordinateSystem, layer);
 			dlg.ShowDialog();
+		}
+
+		private void m_genericdbbutton_Click(object sender, EventArgs e)
+		{
+			GenericWKBDatabaseWithBoundingBoxColumns layer = null;
+			try
+			{
+				layer = new GenericWKBDatabaseWithBoundingBoxColumns(new OleDbConnection( m_genericdbconnectiontext.Text), "testpolykom", "ID");
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(this, "Could not open connection\nError: " + ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			//show map
+			frmMap dlg = new frmMap(layer.MaxBounds, layer.CoordinateSystem, layer);
+			dlg.ShowDialog();
+		}
+
+		private void m_uploadmiftodbbutton_Click(object sender, EventArgs e)
+		{
+			OleDbConnection conn = new OleDbConnection(m_genericdbconnectiontext.Text);
+			conn.Open();
+
+			//load mif
+			MapInfo.MapInfoLayer layer = MapInfo.MIFParser.LoadFile(m_mifpathtext.Text);
+
+			//delete existing table
+			try
+			{
+				OleDbCommand cmd = conn.CreateCommand();
+				cmd.CommandText	= "DROP TABLE " + layer.Name;
+				cmd.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+			{
+			}
+
+			//create
+			string sql = "CREATE TABLE " + layer.Name + "(ID AUTOINCREMENT, ";
+			for(int i = 0; i < layer.ColumnNames.Length; i++)
+			{
+				sql += layer.ColumnNames[i] + " " + layer.ColumnTypes[i] + ", ";
+			}
+			sql += "X1 FLOAT, Y1 FLOAT, X2 FLOAT, Y2 FLOAT, MapObject OLEOBJECT)";
+			try
+			{
+				OleDbCommand cmd = conn.CreateCommand();
+				cmd.CommandText= sql;
+				cmd.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+			{
+				throw new Exception("BAH! " + ex.Message);
+			}
+
+			//fill
+			foreach (MapInfo.MapInfoObject obj in layer)
+			{
+				sql = "INSERT INTO " + layer.Name + "(";
+				for (int i = 0; i < layer.ColumnNames.Length; i++)
+				{
+					sql += layer.ColumnNames[i] + ", ";
+				}
+				sql += "X1, Y1, X2, Y2, MapObject) VALUES(";
+				for (int i = 0; i < layer.ColumnNames.Length; i++)
+				{
+					sql += "?, ";
+				}
+
+				IEnvelope env = obj.Geometry.EnvelopeInternal;
+				sql += env.MinX.ToString(System.Globalization.CultureInfo.InvariantCulture) + ", ";
+				sql += env.MinY.ToString(System.Globalization.CultureInfo.InvariantCulture) + ", ";
+				sql += env.MaxX.ToString(System.Globalization.CultureInfo.InvariantCulture) + ", ";
+				sql += env.MaxY.ToString(System.Globalization.CultureInfo.InvariantCulture) + ", ";
+				sql += "?)";
+
+				try
+				{
+					OleDbCommand cmd = conn.CreateCommand();
+					cmd.CommandText = sql;
+					for (int i = 0; i < layer.ColumnNames.Length; i++)
+					{
+						OleDbParameter p = cmd.CreateParameter();
+						p.Value = obj.GetColumnValue(i);
+						cmd.Parameters.Add(p);
+					}
+					OleDbParameter blob = cmd.CreateParameter();
+					blob.Value = obj.Geometry.AsBinary();
+					cmd.Parameters.Add(blob);
+					cmd.ExecuteNonQuery();
+				}
+				catch(Exception ex)
+				{
+					throw new Exception("BAH! " + ex.Message);
+				}
+
+			}
 		}
     }
 }
