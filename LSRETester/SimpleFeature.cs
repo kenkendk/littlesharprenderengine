@@ -10,14 +10,25 @@ namespace LSRETester
     {
         private IStyle m_style;
         private IGeometry m_geom;
+		private int m_primarykey;
 
-        public SimpleFeature(IGeometry geom, IStyle style)
+		public SimpleFeature(IGeometry geom, IStyle style) : this(geom, style, 0)
+		{
+		}
+
+        public SimpleFeature(IGeometry geom, IStyle style, int primarykey)
         {
             m_style = style;
             m_geom = geom;
+			m_primarykey = primarykey;
         }
 
         #region IFeature Members
+
+		public object PrimaryKey
+        {
+            get { return m_primarykey; }
+        }
 
         public Topology.Geometries.IGeometry Geometry
         {

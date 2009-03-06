@@ -148,6 +148,27 @@ namespace MapInfo
 			}
 		}
 
+		public object GetColumnValue(int i)
+		{
+			string mitype = this.ParentLayer.ColumnTypes[i].ToLower();
+			if (mitype == "integer")
+				return int.Parse(Data[i]);
+			else if (mitype.StartsWith("char("))
+				return Data[i];
+			else if (mitype == "float")
+				return float.Parse(Data[i]);
+			else if (mitype == "date")
+				return new DateTime(int.Parse(Data[i].Substring(0, 4)), int.Parse(Data[i].Substring(4, 2)), int.Parse(Data[i].Substring(6, 2)));
+			else if (mitype == "logical")
+				return Data[i] == "T" ? true : false;
+			else if (mitype == "smallint")
+				return Int16.Parse(Data[i]);
+			else if (mitype.StartsWith("decimal("))
+				return decimal.Parse(Data[i]);
+			else
+				throw new Exception("MITypen " + mitype + " er endnu ikke understøttet i GetColumnValue");
+		}
+
 		#endregion
 	}
 
