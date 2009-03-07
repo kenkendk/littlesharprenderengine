@@ -41,6 +41,12 @@ namespace LittleSharpRenderEngine
             m_graphics = Graphics.FromImage(m_canvas);
             m_graphics.Clear(background);
             m_graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            
+            //m_graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+            
+            //m_graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            //m_graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            //m_graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
             PointRender = new PointRender(new Render.Point().Render);
             LineStringRender = new LineStringRender(new Render.Line().Render);
