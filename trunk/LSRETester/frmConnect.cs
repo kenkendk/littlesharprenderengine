@@ -104,7 +104,7 @@ namespace LSRETester
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(this, "Fejl under forbindelse til SQL Server\nFejl: " + ex.Message, "Fejl", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(this, "Error connecting to SQL Server\nMessage: " + ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -116,10 +116,11 @@ namespace LSRETester
 			try
 			{
 				layer.GeoColumn = layer.GetGeoColumn();
+                //layer.GeoColumn = "MAPINFOOBJECT";
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(this, "Fejl under forbindelse til SQL Server\nFejl: " + ex.Message, "Fejl", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(this, "Error connection to SQL Server\nMessage: " + ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
