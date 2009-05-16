@@ -111,7 +111,7 @@ namespace LittleSharpRenderEngine
 
             ICoordinate[] output = new ICoordinate[input.Length];
             for(int i = 0; i < input.Length; i++)
-                output[i] = new Coordinate((input[i].X - xoff) * xres, ((input[i].Y - yoff) * yres));
+                output[i] = new Coordinate((input[i].X - xoff) * xres, m_canvas.Height - ((input[i].Y - yoff) * yres));
 
             return output;
         }
