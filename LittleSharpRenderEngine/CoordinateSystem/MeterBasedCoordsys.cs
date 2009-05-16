@@ -56,7 +56,10 @@ namespace LittleSharpRenderEngine.CoordinateSystem
 
         public virtual double DistanceInMeters(Topology.Geometries.IPoint p1, Topology.Geometries.IPoint p2)
         {
-            return 1.0;            
+            double xdist = Math.Abs(p1.X - p2.X);
+            double ydist = Math.Abs(p1.Y - p2.Y);
+
+            return Math.Sqrt((xdist * xdist) + (ydist * ydist));            
         }
 
         public virtual Topology.CoordinateSystems.ICoordinateSystem CoordinateSystem { get { return null; } }
